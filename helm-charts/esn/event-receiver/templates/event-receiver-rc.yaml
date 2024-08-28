@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: event-receiver-controller-1
+spec:
+  replicas: 1
+  selector:
+    app: event-receiver-1
+  template:
+    metadata:
+      labels:
+        app: event-receiver-1
+    spec:
+      hostname: str-1-eventreceiver1
+      containers:
+      - name: str-1-eventreceiver1
+        imagePullPolicy: {{.Values.pullPolicy}}
+        image: {{.Values.imageRegistry}}/{{.Values.imageName}}:{{.Values.dockerTag}}
+        ports:
+         - containerPort: 108888

@@ -1,0 +1,19 @@
+{
+"type" : "PUBLISHER",
+"properties" : [
+        {"name" : "request.timeout.ms",          "value" : "1000"},
+        {"name" : "bootstrap.servers",           "value" : "${kafkaBrokers}"},
+        {"name" : "acks",                        "value" : "all"},
+        {"name" : "retries",                     "value" : "0"},
+        {"name" : "batch.size",                  "value" : "16384"},
+        {"name" : "linger.ms",                   "value" : "1"},
+        {"name" : "buffer.memory",               "value" : "33554432"},
+        {"name" : "key.serializer",              "value" : "org.apache.kafka.common.serialization.StringSerializer"},
+        {"name" : "value.serializer",            "value" : "com.ericsson.component.aia.common.avro.kafka.encoder.KafkaGenericRecordEncoder"},
+	{"name" : "partitioner.class",           "value" : "com.ericsson.component.aia.services.exteps.io.adapter.partition.GlobalCellIdPartitioner"}
+],
+"destinations" : [
+        {"name" : "decoded"
+        }
+    ]
+}

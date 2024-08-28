@@ -1,0 +1,41 @@
+dependencies:
+  - name: enm-jms
+    version: 1.0.0
+    repository: http://localhost:8879/charts
+  - name: enm-datalayer
+    version: 1.0.0
+    repository: http://localhost:8879/charts
+  - name: enm-postgres
+    version: 1.0.0
+    repository: http://localhost:8879/charts
+  - name: med-mscm
+    version: 1.0.0
+    repository: http://localhost:8879/charts
+  - name: med-cpp-policy
+    version: 1.0.0
+    repository: http://localhost:8879/charts
+  - name: med-event-client
+    version: 1.0.0
+    repository: http://localhost:8879/charts
+  - name: med-router
+    version: 1.0.0
+    repository: http://localhost:8879/charts
+  - name: med-sup-client
+    version: 1.0.0
+    repository: http://localhost:8879/charts
+  - name: med-msfm
+    version: 1.0.0
+    repository: http://localhost:8879/charts
+  - name: med-mspm
+    version: 1.0.0
+    repository: http://localhost:8879/charts
+  - name: sec-service
+    version: 1.0.0
+    repository: http://localhost:8879/charts
+#  - name: fm-service
+#    version: 1.0.0
+#    repository: http://localhost:8879/charts
+#  - name: licence-service
+#    version: 1.0.0
+#    repository: http://localhost:8879/charts
+

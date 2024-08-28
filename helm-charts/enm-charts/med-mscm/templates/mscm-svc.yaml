@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mscm
+  labels:
+    app: mcscm
+spec:
+  ports:
+  - port: 4447
+    name: mscm-remote
+    protocol: TCP
+  - port: 9999
+    protocol: TCP
+    name: mscm-ejb
+  - port: 9990
+    name: mscm-admin
+    protocol: TCP
+  - port: 59000
+    name: mscm-corba0
+    protocol: TCP
+  - port: 59001
+    name: mscm-corba1
+    protocol: TCP
+  - port: 59002
+    name: mscm-corba2
+    protocol: TCP
+  - port: 59003
+    name: mscm-corba3
+    protocol: TCP
+  - port: 59004
+    name: mscm-corba4
+    protocol: TCP
+  - port: 59005
+    name: mscm-corba5
+    protocol: TCP
+  - port: 59006
+    name: mscm-corba6
+    protocol: TCP
+  - port: 59007
+    name: mscm-corba7
+    protocol: TCP
+
+  selector:
+    app: mscm

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lcmserv
+  labels:
+    app: lcmserv
+spec:
+  ports:
+  - port: 4447
+    name: lcmserv-remote
+    protocol: TCP
+  - port: 9999
+    protocol: TCP
+    name: lcmserv-ejb
+  - port: 9990
+    name: lcmserv-admin
+    protocol: TCP
+  selector:
+    app: lcmserv

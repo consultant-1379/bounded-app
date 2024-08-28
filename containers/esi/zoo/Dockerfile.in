@@ -1,0 +1,18 @@
+FROM armdocker.rnd.ericsson.se/proj_enm/ericsson-java7-container:TAG
+
+RUN     mkdir -p /ericsson/tor
+RUN     mkdir /ericsson/tor/data
+RUN     touch /ericsson/tor/data/global.properties
+RUN     touch /ericsson/tor/data/jmsserver.running
+
+RUN     echo "zoo1=zoo1.${DOMAIN:-enm.local}" >> /ericsson/tor/data/global.properties
+
+COPY    target/container_content /opt/content/
+COPY	config/scripts/docker-entrypoint.sh /usr/sbin/
+
+RUN	cd /opt/content && cat container_content | xargs -I {} curl -k -L -O {} && \
+	rpm -ivh --nodeps *.rpm && \
+	cd && rm -rf /opt/content
+
+CMD docker-entrypoint.sh
+	

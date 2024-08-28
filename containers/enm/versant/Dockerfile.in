@@ -1,0 +1,17 @@
+FROM armdocker.rnd.ericsson.se/proj_enm/ericsson-java7-container:TAG
+
+COPY  	config/ /opt/config/
+COPY    config/scripts/mountpoint /bin/
+COPY    target/container_content /opt/content/
+ 
+RUN	mv /opt/config/scripts/* /usr/sbin/ && \
+	mv /usr/sbin/logger /usr/bin/ && \
+	/usr/sbin/install.sh && \
+	rm -rf /opt/config && \
+	rm -rf /usr/sbin/patch_litp_scripts.sh && \
+        rm -rf /usr/sbin/install.sh && \
+	rm -rf /usr/sbin/VERSANT_CONFIG && \
+	rm -rf /ericsson/versant/uninstaller/ && \
+	rm -rf /ericsson/versant/install/ && \
+	rm -rf /ericsson/versant_data/databases/dps_integration/.systrace
+

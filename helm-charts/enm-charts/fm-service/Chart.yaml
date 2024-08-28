@@ -1,0 +1,8 @@
+name: fm-service
+version: 1.0.0
+description: ENM Fault Management Service chart for kubernetes.
+maintainers:
+  - name: Dejan Kitic
+    email: dejan.kitic@ericsson.com
+
+

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fmserv
+  labels:
+    app: fmserv
+spec:
+  ports:
+  - port: 4447
+    name: fmservice-remote
+    protocol: TCP
+  - port: 9999
+    protocol: TCP
+    name: fmservice-ejb
+  - port: 9990
+    name: fmservice-admin
+    protocol: TCP
+  selector:
+    app: fmserv
+

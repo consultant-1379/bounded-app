@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mscm
+spec:
+  template:
+    metadata:
+      labels:
+        app: mscm
+        tier: cm-mediation
+    spec:
+      containers:
+      - name: mscm
+        imagePullPolicy: {{.Values.pullPolicy}}
+        image: {{.Values.imageRegistry}}/med-mscm:{{.Values.dockerTag}}
+        env:
+         - name: DOMAIN
+           value: {{.Values.dnsDomain}}
+         - name: JVM_HEAP_SIZE
+           value: {{.Values.jvmXmx | quote}}
+        resources:
+          limits:
+            memory: {{.Values.memLimit}}
+            cpu: {{.Values.cpuLimit}}
+        ports:
+        - containerPort: 4447
+        - containerPort: 9990
+        - containerPort: 9999
+        - containerPort: 59000
+        - containerPort: 59001
+        - containerPort: 59002
+        - containerPort: 59003
+        - containerPort: 59004
+        - containerPort: 59005
+        - containerPort: 59006
+        - containerPort: 59007
+        volumeMounts:
+        - mountPath: /etc/opt/ericsson
+          name: models
+        - mountPath: /ericsson/tor/data/dps
+          name: dps
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: models-pvc
+        - name: dps
+          persistentVolumeClaim:
+            claimName: dps-pvc
+

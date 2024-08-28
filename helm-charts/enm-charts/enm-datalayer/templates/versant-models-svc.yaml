@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: db1-service
+  labels:
+    app: versant
+spec:
+  ports:
+  - port: 5019
+    name: port-a
+    protocol: TCP
+  - port: 5020
+    protocol: TCP
+    name: port-b
+  - port: 5021
+    name: port-c
+    protocol: TCP
+  selector:
+    app: versant
+

@@ -1,0 +1,8 @@
+name: med-router
+version: 1.0.0
+description: ENM Mediation Router chart for kubernetes.
+maintainers:
+  - name: Dejan Kitic
+    email: dejan.kitic@ericsson.com
+
+

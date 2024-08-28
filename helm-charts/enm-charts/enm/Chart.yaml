@@ -1,0 +1,8 @@
+name: enm
+version: 16.15-1.30.88
+description: ENM JMS chart for kubernetes.
+maintainers:
+  - name: Dejan Kitic
+    email: dejan.kitic@ericsson.com
+
+

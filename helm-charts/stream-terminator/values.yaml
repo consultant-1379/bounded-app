@@ -1,0 +1,7 @@
+imageRegistry: "armdocker.rnd.ericsson.se/proj_oss/bounded-app"
+imageName: "msstr1"
+dockerTag: "17.1-1.33.2"
+dnsDomain: "default.svc.dekstroza.local"
+stNamespace: "default"
+stDNSDomain: "dekstroza.local"
+pullPolicy: "Always"

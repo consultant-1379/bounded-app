@@ -1,0 +1,7 @@
+imageRegistry: "armdocker.rnd.ericsson.se/proj_bounded_application/esn"
+imageName: "decoded-forwarder"
+dockerTag: "latest"
+dnsDomain: "default.svc.dekstroza.local"
+dfNamespace: "default"
+dfDNSDomain: "dekstroza.local"
+pullPolicy: "Always"

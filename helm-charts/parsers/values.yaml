@@ -1,0 +1,7 @@
+imageRegistry: "armdocker.rnd.ericsson.se/proj_bounded_application"
+imageName: "parsers"
+dockerTag: "17.1-1.33.2"
+dnsDomain: "default.svc.dekstroza.local"
+pNamespace: "default"
+pDNSDomain: "dekstroza.local"
+pullPolicy: "Always"

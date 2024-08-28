@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: s3-controller-1
+spec:
+  replicas: 1
+  selector:
+    app: s3-1
+  template:
+    metadata:
+      labels:
+        app: s3-1
+    spec:
+      hostname: str-1-s3
+      containers:
+      - name: str-1-s3
+        imagePullPolicy: {{.Values.pullPolicy}}
+        image: {{.Values.imageRegistry}}/{{.Values.imageName}}:{{.Values.dockerTag}}
+
+

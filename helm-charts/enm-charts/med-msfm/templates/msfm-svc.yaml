@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: msfm
+  labels:
+    app: msfm
+spec:
+  ports:
+  - port: 4447
+    name: msfm-remote
+    protocol: TCP
+  - port: 9999
+    protocol: TCP
+    name: msfm-ejb
+  - port: 9990
+    name: msfm-admin
+    protocol: TCP
+  selector:
+    app: msfm

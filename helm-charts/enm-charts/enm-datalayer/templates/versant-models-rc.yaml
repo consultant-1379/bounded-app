@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: datalayer
+spec:
+  template:
+    metadata:
+      labels:
+        app: versant
+        tier: database
+      annotations:
+        scheduler.alpha.kubernetes.io/affinity: >
+          {
+            "nodeAffinity": {
+              "requiredDuringSchedulingIgnoredDuringExecution": {
+                "nodeSelectorTerms": [
+                  {
+                    "matchExpressions": [
+                      {
+                        "key": "{{.Values.nodeLabelKey}}",
+                        "operator": "In",
+                        "values": ["{{.Values.nodeLabelValue}}"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        pod.alpha.kubernetes.io/init-containers: '[
+          {
+            "name": "datalayer-init",
+            "image": "{{.Values.imageRegistry}}/versant-models:{{.Values.dockerTag}}",
+            "command": ["/usr/sbin/docker-entrypoint.sh", "extract-only"],
+            "volumeMounts": [
+              {
+                "name": "versant",
+                "mountPath": "/ericsson/versant_data"
+              },
+              {
+                "name": "models",
+                "mountPath": "/etc/opt/ericsson"
+              },
+              {
+                "name": "dps",
+                "mountPath": "/ericsson/tor/data/dps"
+              }
+          ]
+        }
+      ]'
+    spec:
+      containers:
+      - name: versant
+        imagePullPolicy: {{.Values.pullPolicy}}
+        image: {{.Values.imageRegistry}}/versant-models:{{.Values.dockerTag}}
+        command: [ "/usr/sbin/docker-entrypoint.sh", "start-no-extract"]
+        env:
+         - name: DOMAIN
+           value: {{.Values.dnsDomain}}
+        resources:
+          limits:
+            memory: {{.Values.memLimit}}
+            cpu: {{.Values.cpuLimit}}
+        ports:
+        - containerPort: 5019
+        - containerPort: 5020
+        - containerPort: 5021
+        volumeMounts:
+        - name: versant
+          mountPath: /ericsson/versant_data
+        - name: models
+          mountPath: /etc/opt/ericsson
+        - name: dps
+          mountPath: /ericsson/tor/data/dps
+      volumes:
+        - name: versant
+          hostPath:
+            path: /opt/enm/versant_data
+        - name: models
+          hostPath:
+            path: /opt/enm/models
+        - name: dps
+          hostPath:
+            path: /opt/enm/dps

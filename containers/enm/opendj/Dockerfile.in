@@ -1,0 +1,24 @@
+FROM 	armdocker.rnd.ericsson.se/proj_enm/ericsson-java7-container:TAG
+
+COPY    target/container_content /opt/content/
+COPY    config/rootCA* /ericsson/tor/data/certificates/
+COPY	config/global.properties /ericsson/tor/data/
+COPY	config/scripts/dmidecode /usr/sbin/
+COPY	config/scripts/docker-entrypoint.sh /usr/sbin/
+
+ENV		HOST_NAME opendjhost1
+RUN		groupadd jboss
+
+RUN		yum -y install procmail rsyslog && yum -y clean all
+
+RUN		cd /opt/content && \
+		cat container_content | xargs -I {} curl -k -L -O {} && \
+		rpm -ivh  --nodeps *.rpm && \
+		cd && rm -rf /opt/content && \
+		service opendj start && \
+		service opendj stop
+
+EXPOSE 1636 1689 8447 4444
+
+CMD 	docker-entrypoint.sh
+

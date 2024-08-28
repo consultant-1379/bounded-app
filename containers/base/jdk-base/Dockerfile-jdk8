@@ -1,0 +1,44 @@
+FROM armdocker.rnd.ericsson.se/proj_oss_releases/enm/enm-base
+
+MAINTAINER PDLCIAXISC@pdl.internal.ericsson.com
+
+###############
+# install jdk #
+###############
+
+ARG JDK_FILENAME=jdk-8u101-linux-x64.rpm
+ARG JDK_RPM_URL=http://download.oracle.com/otn-pub/java/jdk/8u101-b13/$JDK_FILENAME
+ARG JDK_DIR=/usr/java/jdk1.8.0_101
+
+RUN mkdir /tmp/docker-cache
+
+RUN curl --proxy https://www-proxy.lmera.ericsson.se:8080 -kLb "oraclelicense=a" $JDK_RPM_URL --output /tmp/docker-cache/$JDK_FILENAME 
+
+RUN rpm -i /tmp/docker-cache/$JDK_FILENAME
+
+RUN rm -rf                                      \
+    $JDK_DIR/*src.zip                           \
+    $JDK_DIR/lib/missioncontrol                 \
+    $JDK_DIR/lib/visualvm                       \
+    $JDK_DIR/lib/*javafx*                       \
+    $JDK_DIR/jre/lib/plugin.jar                 \
+    $JDK_DIR/jre/lib/ext/jfxrt.jar              \
+    $JDK_DIR/jre/bin/javaws                     \
+    $JDK_DIR/jre/lib/javaws.jar                 \
+    $JDK_DIR/jre/lib/desktop                    \
+    $JDK_DIR/jre/plugin                         \
+    $JDK_DIR/jre/lib/deploy*                    \
+    $JDK_DIR/jre/lib/*javafx*                   \
+    $JDK_DIR/jre/lib/*jfx*                      \
+    $JDK_DIR/jre/lib/amd64/libdecora_sse.so     \
+    $JDK_DIR/jre/lib/amd64/libprism_*.so        \
+    $JDK_DIR/jre/lib/amd64/libfxplugins.so      \
+    $JDK_DIR/jre/lib/amd64/libglass.so          \
+    $JDK_DIR/jre/lib/amd64/libgstreamer-lite.so \
+    $JDK_DIR/jre/lib/amd64/libjavafx*.so        \
+    $JDK_DIR/jre/lib/amd64/libjfx*.so
+
+RUN rm -rf /tmp/docker-cache
+
+ENV JAVA_HOME=$JDK_DIR
+ENV PATH=$PATH:$JAVA_HOME/bin

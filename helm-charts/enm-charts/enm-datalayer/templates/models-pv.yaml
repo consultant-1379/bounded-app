@@ -1,0 +1,15 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: models-pv
+  labels:
+    kubernetes.io/cluster-service: "false"
+spec:
+  capacity:
+    storage: 10G
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: nfs.dekstroza.local
+    path: /opt/enm/models
+

@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for s3
+name: s3
+version: 1.0

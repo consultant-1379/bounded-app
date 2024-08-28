@@ -1,0 +1,86 @@
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk
+  labels:
+    app: zk
+spec:
+  ports:
+  - port: 2888
+    name: peer
+  - port: 3888
+    name: leader-election
+  clusterIP: None
+  selector:
+    app: zk
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: zoo1
+  labels:
+     app: zk
+spec:
+  hostname: str-1-zoo1
+  containers:
+  - name: zk
+    imagePullPolicy: {{.Values.pullPolicy}}
+    image: {{.Values.imageRegistry}}/{{.Values.imageName}}:{{.Values.dockerTag}}
+    ports:
+     - containerPort: 2888
+       name: peer
+     - containerPort: 3888
+       name: leader-election
+    env:
+     - name: DOMAIN
+       value: {{.Values.zkDNSDomain}}
+     - name: NAMESPACE
+       value: {{.Values.zkNamespace}}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: zoo2
+  labels:
+     app: zk
+spec:
+  hostname: str-2-zoo1
+  containers:
+  - name: zk
+    imagePullPolicy: {{.Values.pullPolicy}}
+    image: {{.Values.imageRegistry}}/{{.Values.imageName}}:{{.Values.dockerTag}}
+    ports:
+     - containerPort: 2888
+       name: peer
+     - containerPort: 3888
+       name: leader-election
+    env:
+     - name: DOMAIN
+       value: {{.Values.zkDNSDomain}}
+     - name: NAMESPACE
+       value: {{.Values.zkNamespace}}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: zoo3
+  labels:
+     app: zk
+spec:
+  hostname: str-3-zoo1
+  containers:
+  - name: zk
+    imagePullPolicy: {{.Values.pullPolicy}}
+    image: {{.Values.imageRegistry}}/{{.Values.imageName}}:{{.Values.dockerTag}}
+    ports:
+     - containerPort: 2888
+       name: peer
+     - containerPort: 3888
+       name: leader-election
+    env:
+     - name: DOMAIN
+       value: {{.Values.zkDNSDomain}}
+     - name: NAMESPACE
+       value: {{.Values.zkNamespace}}
+

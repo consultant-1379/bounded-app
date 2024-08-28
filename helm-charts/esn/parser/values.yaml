@@ -1,0 +1,7 @@
+imageRegistry: "armdocker.rnd.ericsson.se/proj_bounded_application/esn"
+imageName: "parser"
+dockerTag: "latest"
+dnsDomain: "default.svc.dekstroza.local"
+pNamespace: "default"
+pDNSDomain: "dekstroza.local"
+pullPolicy: "Always"

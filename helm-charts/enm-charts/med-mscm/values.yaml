@@ -1,0 +1,8 @@
+imageRegistry: "armdocker.rnd.ericsson.se/proj_enm"
+dockerTag: "16.15-1.30.88"
+memLimit: "4Gi"
+cpuLimit: "4096m"
+jvmXmx: 4096
+dnsDomain: "default.svc.dekstroza.local"
+pullPolicy: "Always"
+

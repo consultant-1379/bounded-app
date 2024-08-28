@@ -1,0 +1,12 @@
+export VERSANT_VERSION="8.0.2.63"
+export VERSANT_HOME="/ericsson/versant"
+export VERSANT_INSTALL_DIR="$VERSANT_HOME/install"
+export VERSANT_INSTALL_LOG_FILE="$VERSANT_INSTALL_DIR/install.log"
+export VERSANT_INSTALL_PROP_FILE="$VERSANT_INSTALL_DIR/install.properties"
+export VERSANT_USER="versant"
+export VERSANT_HOST_NAME="db1-service"
+export DB_NAME="dps_integration"
+export DB_CONFIG_PATH="/ericsson/versant_data/databases"
+export DB_ID_FILE_PATH="/ericsson/versant_data"
+export DB_SSD_PID_FILE="/var/run/ssd.pid"
+

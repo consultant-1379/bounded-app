@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: str-1-reg1
+  labels:
+    app: schema-registry-1
+spec:
+  ports:
+  - port: 4447
+    protocol: TCP
+  - port: 8081
+    protocol: TCP
+    name: sr-port
+  - port: 8080
+    protocol: TCP
+  - port: 8787
+    protocol: TCP
+  - port: 9090
+    protocol: TCP
+  - port: 9990
+    protocol: TCP
+  selector:
+    app: schema-registry-1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: str-2-reg1
+  labels:
+    app: schema-registry-2
+spec:
+  ports:
+  - port: 4447
+    protocol: TCP
+  - port: 8081
+    protocol: TCP
+    name: sr-port
+  - port: 8080
+    protocol: TCP
+  - port: 8787
+    protocol: TCP
+  - port: 9090
+    protocol: TCP
+  - port: 9990
+    protocol: TCP
+  selector:
+    app: schema-registry-2

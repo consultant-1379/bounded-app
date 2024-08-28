@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: parsers
+  labels:
+    app: parsers
+spec:
+  ports:
+  - port: 10101
+    protocol: TCP
+    name: p-port
+  selector:
+    app: parsers
+

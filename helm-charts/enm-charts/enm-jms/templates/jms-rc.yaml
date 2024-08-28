@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: jms-server
+spec:
+  template:
+    metadata:
+      labels:
+        app: jms-server
+        tier: backend
+    spec:
+      containers:
+      - name: jms-server
+        imagePullPolicy: {{.Values.pullPolicy}}
+        image: {{.Values.imageRegistry}}/enm-jms:{{.Values.dockerTag}}
+        env:
+         - name: DOMAIN
+           value: {{.Values.dnsDomain}}
+        resources:
+          limits:
+            memory: {{.Values.memLimit}}
+            cpu: {{.Values.cpuLimit}}
+        ports:
+        - containerPort: 9999
+        - containerPort: 9990
+        - containerPort: 4447
+        - containerPort: 5445
+

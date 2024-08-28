@@ -1,0 +1,8 @@
+name: opendj
+version: 1.0.0
+description: ENM opendj  chart for kubernetes.
+maintainers:
+  - name: Dejan Kitic
+    email: dejan.kitic@ericsson.com
+
+

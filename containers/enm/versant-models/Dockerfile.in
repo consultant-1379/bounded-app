@@ -1,0 +1,43 @@
+FROM armdocker.rnd.ericsson.se/proj_enm/versant:TAG
+
+COPY 	config/scripts/docker-entrypoint.sh /usr/sbin/
+COPY    target/container_content /opt/content/
+COPY    config/exclude_models /opt/content/
+
+RUN	groupadd mdt && useradd -g mdt -ms /bin/bash mdtuser && echo -e "12shroot\n12shroot" | (passwd --stdin mdtuser)
+RUN	groupadd jboss && useradd -g jboss -ms /bin/bash jboss_user && echo -e "12shroot\n12shroot" | (passwd --stdin mdtuser)
+RUN	useradd -g mdt -ms /bin/bash dpsuser && echo -e "12shroot\n12shroot" | (passwd --stdin mdtuser)
+RUN	mkdir -p /ericsson/pmic1 && chown mdtuser:mdt /ericsson/pmic1/ -R
+
+RUN	cd /opt/content && \
+    cat container_content |egrep -v "$(cat exclude_models)" | xargs -I {} curl -k -L -O {} && \
+	rpm -ivh  --nodeps *.rpm && \
+	## Set the x permission on script that creates model repository layout
+    chmod +x /opt/ericsson/nms/litp/etc/puppet/modules/mcollective_agents/files/create_modelRpm_deployment_layout.sh && \
+	chmod +w /etc/init.d/modeldeployservice && \
+	## Tell model service not to send jms events ##
+    sed -i 's/mdtJavaArgs=( /mdtJavaArgs=(-Xmx4G -Xms4G -Dmdt.send.events=false /g' /etc/init.d/modeldeployservice && chmod -w /etc/init.d/modeldeployservice && \
+	## Create versant database and deploy models ##
+	add-host-alias $HOSTNAME db1-service && \
+	/etc/init.d/oscssd start && \
+	/etc/init.d/versant start && \
+	/opt/ericsson/nms/litp/etc/puppet/modules/mcollective_agents/files/create_modelRpm_deployment_layout.sh && \
+	java -cp "/opt/ericsson/ERICmodeldeploymentclient/lib/*" com.ericsson.oss.itpf.modeling.model.deployment.client.main.ModelDeploymentClientStart /etc/opt/ericsson/ERICmodeldeployment/data/execution/toBeInstalled/ && \
+	## Shutdown everything ##
+	/etc/init.d/oscssd stop && \
+	/etc/init.d/versant stop && \
+	chmod +w /etc/init.d/modeldeployservice && \
+	sed -i 's/mdtJavaArgs=(-Xmx4G -Xms4G -Dmdt.send.events=false/mdtJavaArgs=( -Dmdt.send.events=false/g' /etc/init.d/modeldeployservice && chmod -w /etc/init.d/modeldeployservice && \
+	rm -rf /tmp/mdt* && \
+	## Clean up after versant ##
+	rm -rf /ericsson/versant_data/databases/dps_integration/.systrace && \
+	cd && rm -rf /opt/content/ && \
+	cd /ericsson/tor/data/dps && tar -zcvf dps-generated.tar.gz ERICdpsupgrade/ && mv dps-generated.tar.gz /opt/ && rm -rf /ericsson/tor/data/dps && \
+	cd /etc/opt/ericsson && tar -zcvf ERICmodeldeployment.tar.gz ERICmodeldeployment/ && mv ERICmodeldeployment.tar.gz /opt/ && rm -rf /etc/opt/ericsson/ERICmodeldeployment && \
+	cd /ericsson && tar -zcvf versant_data.tar.gz versant_data/ && mv versant_data.tar.gz /opt/ && rm -rf /ericsson/versant_data
+
+EXPOSE 44500-44599
+EXPOSE 5019
+
+CMD /usr/sbin/docker-entrypoint.sh
+

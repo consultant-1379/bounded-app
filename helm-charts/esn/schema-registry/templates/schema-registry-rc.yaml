@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: schema-registry-controller-1
+spec:
+  replicas: 1
+  selector:
+    app: schema-registry-1
+  template:
+    metadata:
+      labels:
+        app: schema-registry-1
+    spec:
+      hostname: str-1-reg1
+      containers:
+      - name: str-1-reg1
+        imagePullPolicy: {{.Values.pullPolicy}}
+        image: {{.Values.imageRegistry}}/{{.Values.imageName}}:{{.Values.dockerTag}}
+        ports:
+         - containerPort: 4447
+         - containerPort: 8081
+         - containerPort: 8080
+         - containerPort: 8787
+         - containerPort: 9090
+         - containerPort: 9990
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: schema-registry-controller-2
+spec:
+  replicas: 1
+  selector:
+    app: schema-registry-2
+  template:
+    metadata:
+      labels:
+        app: schema-registry-2
+    spec:
+      hostname: str-2-reg1
+      containers:
+      - name: str-2-reg1
+        imagePullPolicy: {{.Values.pullPolicy}}
+        image: {{.Values.imageRegistry}}/{{.Values.imageName}}:{{.Values.dockerTag}}
+        ports:
+         - containerPort: 4447
+         - containerPort: 8081
+         - containerPort: 8080
+         - containerPort: 8787
+         - containerPort: 9090
+         - containerPort: 9990

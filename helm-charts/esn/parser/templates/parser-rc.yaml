@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: parser-controller-1
+spec:
+  replicas: 1
+  selector:
+    app: parser-1
+  template:
+    metadata:
+      labels:
+        app: parser-1
+    spec:
+      hostname: str-1-apeps1
+      containers:
+      - name: str-1-apeps1
+        imagePullPolicy: {{.Values.pullPolicy}}
+        image: {{.Values.imageRegistry}}/{{.Values.imageName}}:{{.Values.dockerTag}}
+        ports:
+         - containerPort: 20101
+           name: JMX
+         - containerPort: 63111
+         - containerPort: 63109
+         - containerPort: 63110
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: parser-controller-2
+spec:
+  replicas: 1
+  selector:
+    app: parser-2
+  template:
+    metadata:
+      labels:
+        app: parser-2
+    spec:
+      hostname: str-2-apeps1
+      containers:
+      - name: str-2-apeps1
+        imagePullPolicy: {{.Values.pullPolicy}}
+        image: {{.Values.imageRegistry}}/{{.Values.imageName}}:{{.Values.dockerTag}}
+        ports:
+         - containerPort: 20101
+           name: JMX
+         - containerPort: 63111
+         - containerPort: 63109
+         - containerPort: 63110

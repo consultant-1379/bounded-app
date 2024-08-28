@@ -1,0 +1,47 @@
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  name: zk
+  labels:
+    app: zk
+spec:
+  ports:
+  - port: 2888
+    name: peer
+  - port: 3888
+    name: leader-election
+  clusterIP: None
+  selector:
+    app: zk
+---
+apiVersion: apps/v1alpha1
+kind: PetSet
+metadata:
+  name: zoo
+spec:
+  serviceName: "zk"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: zk
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      containers:
+      - name: zk
+        imagePullPolicy: {{.Values.pullPolicy}}
+        image: {{.Values.imageRegistry}}/{{.Values.imageName}}:{{.Values.dockerTag}}
+        env:
+         - name: DOMAIN
+           value: {{.Values.zkDNSDomain}}
+         - name: NAMESPACE
+           value: {{.Values.zkNamespace}}
+        ports:
+         - containerPort: 2888
+           name: peer
+         - containerPort: 3888
+           name: leader-election

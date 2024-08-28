@@ -1,0 +1,7 @@
+imageRegistry: "armdocker.rnd.ericsson.se/proj_bounded_application/esn"
+imageName: "stream-terminator"
+dockerTag: "latest"
+dnsDomain: "default.svc.dekstroza.local"
+stNamespace: "default"
+stDNSDomain: "dekstroza.local"
+pullPolicy: "Always"

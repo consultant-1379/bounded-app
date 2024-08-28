@@ -1,0 +1,17 @@
+{
+"type" : "SUBSCRIBER",
+"properties" : [
+        {"name" : "bootstrap.servers",           "value" : "${kafkaBrokers}"},
+        {"name" : "group.id",                    "value" : "lteRanParserSubscriberRaw"},
+        {"name" : "auto.offset.reset",           "value" : "earliest"},
+        {"name" : "enable.auto.commit",          "value" : "true"},
+        {"name" : "session.timeout.ms",          "value" : "30000"},
+        {"name" : "auto.commit.interval.ms",     "value" : "1000"},
+	{"name" : "key.deserializer",     	 "value" : "org.apache.kafka.common.serialization.StringDeserializer"},
+	{"name" : "value.deserializer",          "value" : "org.apache.kafka.common.serialization.ByteArrayDeserializer"}
+],
+"destinations" : [
+        {"name" : "raw"
+        }
+    ]
+}

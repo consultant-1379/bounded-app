@@ -1,0 +1,28 @@
+FROM    armdocker.rnd.ericsson.se/proj_oss_releases/enm/jboss-as
+
+COPY 	python/*.py /enm/
+RUN 	ln -s /enm/enm.py /usr/bin/enm
+
+RUN     groupadd jboss
+RUN 	useradd jboss_user -g jboss
+RUN 	useradd litp_jboss
+RUN 	useradd litp_admin
+
+RUN    	yum install -y ERICenmsgautoprovisioning_CXP9031667
+
+COPY    jboss-enm/standalone-dps.xml $JBOSS_HOME/standalone/configuration/standalone-enm.xml
+COPY    jboss-enm/*.properties $JBOSS_HOME/standalone/configuration/
+
+ENV     JBOSS_MODULEPATH=/opt/ericsson/jboss/modules:$JBOSS_HOME/modules
+
+CMD IP_ADDRESS=$(hostname --ip-address)                                                 \
+ && MCAST_ADDR=224.0.$(((RANDOM%255)+1)).$(((RANDOM%255)+1))                            \
+ && MCAST_ADDR2=224.0.$(((RANDOM%255)+1)).$(((RANDOM%255)+1))                           \
+ && $JBOSS_HOME/bin/standalone.sh -c standalone-enm.xml                                 \
+    -Dcom.ericsson.oss.sdk.node.identifier=$HOSTNAME                                    \
+    -Djboss.node.name=$HOSTNAME                                                         \
+    -Djboss.tx.node.id=$HOSTNAME                                                        \
+    -Dsdk.jgroups.distributed.udp.mcast_addr=$MCAST_ADDR                                \
+    -Dsfwk.db.deployment.type=INTEGRATION_TEST                                          \
+    -Dsfwk.service.availability.udp.mcast_addr=$MCAST_ADDR2                             \
+    -b $IP_ADDRESS -bremoting $IP_ADDRESS -bmanagement $IP_ADDRESS --debug

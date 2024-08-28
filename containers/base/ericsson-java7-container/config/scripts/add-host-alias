@@ -1,0 +1,5 @@
+#!/bin/bash
+
+TEMP_FILE=`mktemp`;
+sed "/$1/s/$/ $2/" /etc/hosts >> $TEMP_FILE && truncate --size=0 /etc/hosts && cat $TEMP_FILE > /etc/hosts && rm -rf $TEMP_FILE
+

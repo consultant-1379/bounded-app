@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mspm
+  labels:
+    app: mspm
+spec:
+  ports:
+  - port: 4447
+    name: mspm-remote
+    protocol: TCP
+  - port: 9999
+    protocol: TCP
+    name: mspm-ejb
+  - port: 9990
+    name: mspm-admin
+    protocol: TCP
+  selector:
+    app: mspm

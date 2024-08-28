@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for Parsers
+name: parsers
+version: 1.0.0

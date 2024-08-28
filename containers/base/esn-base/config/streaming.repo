@@ -1,0 +1,5 @@
+[_streaming]
+name=streaming
+baseurl=file:///var/www/html/ENM_STREAMING/
+enabled=1
+gpgcheck=0

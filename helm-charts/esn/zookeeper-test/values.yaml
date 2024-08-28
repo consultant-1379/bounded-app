@@ -1,0 +1,11 @@
+# Default values for zookeeper.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+imageRegistry: "armdocker.rnd.ericsson.se/proj_bounded_application/esn"
+imageName: "zookeeper"
+dockerTag: "latest"
+dnsDomain: "default.svc.dekstroza.local"
+zkNamespace: "default"
+zkDNSDomain: "dekstroza.local"
+pullPolicy: "Always"

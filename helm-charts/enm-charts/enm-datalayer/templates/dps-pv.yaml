@@ -1,0 +1,15 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: dps-pv
+  labels:
+    kubernetes.io/cluster-service: "false"
+spec:
+  capacity:
+    storage: 200M
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: nfs.dekstroza.local
+    path: /opt/enm/dps
+

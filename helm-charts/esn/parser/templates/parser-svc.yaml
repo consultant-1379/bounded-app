@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: str-1-apeps1
+  labels:
+    app: parser-1
+spec:
+  ports:
+   - port: 20101
+     name: JMX
+     protocol: TCP
+   - port: 63111
+     protocol: TCP
+   - port: 63109
+     protocol: UDP
+   - port: 63110
+     protocol: UDP
+  selector:
+    app: parser-1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: str-2-apeps1
+  labels:
+    app: parser-2
+spec:
+  ports:
+   - port: 20101
+     name: JMX
+     protocol: TCP
+   - port: 63111
+     protocol: TCP
+   - port: 63109
+     protocol: UDP
+   - port: 63110
+     protocol: UDP
+  selector:
+    app: parser-2

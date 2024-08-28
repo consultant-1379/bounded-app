@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: medrouter
+  labels:
+    app: med-router
+spec:
+  ports:
+  - port: 4447
+    name: med-router-remote
+    protocol: TCP
+  - port: 9999
+    protocol: TCP
+    name: med-router-ejb
+  - port: 9990
+    name: med-router-admin
+    protocol: TCP
+  selector:
+    app: med-router

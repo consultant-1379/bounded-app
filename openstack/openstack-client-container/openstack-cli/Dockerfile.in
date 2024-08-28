@@ -1,0 +1,14 @@
+FROM ubuntu
+
+RUN	adduser --uid 501 --gid 20 --gecos "" --disabled-password lciadm100 && \
+	apt-get update && apt-get -y install vim curl openssh-client git python-openstackclient python-heatclient python-novaclient python-neutronclient python-glanceclient python-ceilometerclient 
+
+RUN	cd /usr/sbin/ && curl -k -L -O https://storage.googleapis.com/kubernetes-release/release/v1.4.0/bin/linux/amd64/kubectl && chmod +x kubectl
+
+
+USER	lciadm100
+
+WORKDIR /home/lciadm100
+
+CMD bash
+

@@ -1,0 +1,16 @@
+FROM 	armdocker.rnd.ericsson.se/proj_enm/ericsson-jee-container:TAG
+
+COPY    target/container_content /opt/content/
+COPY	config/scripts/docker-entrypoint.sh /usr/sbin/
+	
+RUN	cd /opt/content && cat container_content | xargs -I {} curl -k -L -O {} && \
+ 	rpm -qa | grep ERICjboss | xargs -I {} rpm -e {} && \
+	rpm -ivh  --nodeps *.rpm && \
+	cd && rm -rf /opt/content
+
+RUN 	sed -i -E 's/MEMORY_MAX=[0-9]+/MEMORY_MAX=${JVM_HEAP_SIZE:-1303}/g' /ericsson/3pp/jboss/jboss-as.conf && \
+	sed -i 's/THIS_HOST=$($_HOSTNAME)/THIS_HOST=$HOSTNAME/g' /ericsson/3pp/jboss/bin/standalone.conf && \
+        sed -i "s/DEFAULT_IP='127.0.0.1'/DEFAULT_IP=\$(hostname -i)/g" /ericsson/3pp/jboss/bin/standalone.conf
+
+CMD 	docker-entrypoint.sh
+

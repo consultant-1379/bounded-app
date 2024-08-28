@@ -1,0 +1,40 @@
+FROM centos:6
+
+COPY config/scripts/semodule /usr/sbin/
+COPY config/scripts/dmidecode /usr/sbin/
+COPY config/scripts/add-host-alias /usr/sbin/
+COPY config/scripts/docker-entrypoint.sh /usr/sbin/
+COPY config/postgresql01_passkey /ericsson/tor/data/idenmgmt/postgresql01_passkey
+COPY config/global.properties /ericsson/tor/data/global.properties
+COPY target/container_content /opt/content/
+
+ENV HOST_NAME postgresql01
+
+RUN yum -y install cronie initscripts scl-utils && yum -y clean all && \
+	echo $(head -1 /etc/hosts | cut -f1) $HOST_NAME >> /etc/hosts && \
+	mkdir -p /ericsson/tor/data && mkdir -p /ericsson/tor/data/idenmgmt && \
+	cd /opt/content/ && \
+	cat container_content && \
+	cat container_content | xargs -I {} curl -k -L -O {} && \
+	ls -al /opt/content/ && \
+	rpm -ivh *.rpm --nodeps && \
+	cp /opt/ericsson/nms/litp/etc/puppet/modules/postgresqlinit/templates/postgresql.initd.erb /etc/init.d/postgresql01 && \
+	chmod +x /etc/init.d/postgresql01 && \
+	service postgresql01  initdb && \
+    sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /ericsson/postgres/data/postgresql.conf && \
+    sed -i 's/#max_prepared_transactions = 0/max_prepared_transactions = 10/g' /ericsson/postgres/data/postgresql.conf && \
+	service postgresql01  start && \
+	/opt/rh/postgresql92/root/usr/bin/psql -Upostgres -c "CREATE DATABASE sfwkdb" && \
+	/opt/rh/postgresql92/root/usr/bin/psql -Upostgres -c "CREATE DATABASE wfsdb" && \
+	/opt/rh/postgresql92/root/usr/bin/psql -Upostgres -c "CREATE DATABASE idenmgmt" && \
+	/opt/rh/postgresql92/root/usr/bin/psql -Upostgres -c "CREATE DATABASE jberetdb" && \
+	/ericsson/sfwk_postgres/db/sfwk/install_sfwk_db001.sh && \
+	/ericsson/wfs_postgres/db/wfs/install_wfs_db001.sh && \
+	/ericsson/idenmgmt/bin/install_idenmgmt_db.sh && \
+	/ericsson/jberetdb/bin/install_jberet_db.sh && \
+	service postgresql01 stop && \
+	cd && rm -rf /opt/content
+
+EXPOSE 5432
+
+CMD /usr/sbin/docker-entrypoint.sh

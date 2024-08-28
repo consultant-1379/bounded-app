@@ -1,0 +1,127 @@
+heat_template_version: 2015-04-30
+description: Kubernetes cluster heat template - Dejan Kitic 2016
+
+parameters:
+  image:
+    type: string
+    description: Image used for servers
+
+  kube-master-flavour:
+    type: string
+    description: Flavour used for kubernetes control nodes
+
+  network-name:
+    type: string
+    description: Name of the network used in VM instances
+
+  server_ssh_key:
+    type: string
+    description: SSH key used to connect to control nodes
+
+  docker_vol_size:
+    type: number
+    description: Size of the cinder volume used for docker images
+
+  floating-pool-name:
+    type: string
+    description: Name of the pool with floating ip's
+  index:
+    type: string
+
+  auth-url:
+    type: string
+    description: Keystone authentication url
+
+  username:
+    type: string
+    description: Username for Keystone authentication
+
+  password:
+    type: string
+    description: Password for Keystone authentication
+
+  region:
+    type: string
+    description: Region of this tenant
+
+  tenant-id:
+    type: string
+    description: Tenant id
+resources:
+  floating_ip_master:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: { get_param: floating-pool-name }
+
+  kubernetes-master:
+    type: OS::Nova::Server
+    properties:
+      flavor: {get_param: kube-master-flavour }
+      image: { get_param: image }
+      key_name: { get_param: server_ssh_key }
+      name:
+         list_join: ['-', [ 'kubernetes-master-server', {get_param: index} ]]
+      networks:
+        - network: { get_param: network-name }
+      user_data:
+       str_replace:
+        template: |
+         #!/bin/bash
+         echo "Running boot configuration script"
+         cur_dir=$(pwd) && cd /opt/kubernetes-dev-stack && git pull && cd $cur_dir
+         mkdir /etc/kubernetes
+         echo -e "[Global]" >> /etc/kubernetes/cloud.conf
+         echo -e "auth-url=$auth-url" >> /etc/kubernetes/cloud.conf
+         echo -e "username=$username" >> /etc/kubernetes/cloud.conf
+         echo -e "password=$password" >> /etc/kubernetes/cloud.conf
+         echo -e "region=$region" >> /etc/kubernetes/cloud.conf
+         echo -e "tenant-id=$tenant-id" >> /etc/kubernetes/cloud.conf
+         echo -e "roles:\n  - kube-master" >> /etc/salt/grains
+         ip=$(ip -f inet -o addr show eth0 | cut -d\  -f 7 | cut -d/ -f 1) && echo -e master_ip: $ip >> /etc/salt/grains && echo -e nfs_ip: $ip >> /etc/salt/grains
+         salt-call state.highstate -l quiet
+         kubectl label node $(ip -f inet -o addr show eth0 | cut -d\  -f 7 | cut -d/ -f 1) nfs-node=true
+        params:
+         $auth-url: { get_param: auth-url }
+         $username: { get_param: username }
+         $password: { get_param: password }
+         $region: { get_param: region }
+         $tenant-id: { get_param: tenant-id }
+
+  kubernetes-master-docker_vol:
+    type: OS::Cinder::Volume
+    properties:
+      size: { get_param: docker_vol_size }
+
+  kubernetes-master-nfs_vol:
+    type: OS::Cinder::Volume
+    properties:
+      size: { get_param: docker_vol_size }
+
+  kubernetes-master-nfs_vol_att:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid: { get_resource: kubernetes-master }
+      volume_id: { get_resource: kubernetes-master-nfs_vol }
+      mountpoint: /dev/vdc
+
+  kubernetes-master-docker_vol_att:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid: { get_resource: kubernetes-master }
+      volume_id: { get_resource: kubernetes-master-docker_vol }
+      mountpoint: /dev/vdb
+
+  kubernetes-master-floating-ip-association:
+     type: OS::Nova::FloatingIPAssociation
+     properties:
+       floating_ip: { get_resource: floating_ip_master }
+       server_id: { get_resource: kubernetes-master }
+
+outputs:
+  fp_address:
+    description: Floating IP of master server
+    value: { get_attr: [floating_ip_master, ip] }
+  server_ip:
+    description: Internal ip address of kubernetes master server
+    value: { get_attr: [ kubernetes-master, first_address]  }
+

@@ -1,0 +1,29 @@
+parameters:
+  image: kubernetes-v1.0.0
+  server_ssh_key: edejket
+  kube-master-flavour: m1.kubernetes
+  kube-minion-flavour: m1.kubernetes
+  floating-pool-name: ecn_floating_net
+  network-name: ecn_internal_net
+  docker_vol_size: 10
+  num-masters: 1
+  min-num-minions: 3
+  max-num-minions: 5
+  high-cpu-load-threshold: 50
+  low-cpu-load-threshold: 15
+  scaling-up-adjustment: 1
+  scaling-down-adjustment: -1
+  cooldown-period: 60
+  alarm-high-timeout: 900
+  alarm-low-timeout: 900
+  alarm-eval-periods: 1
+  auth-url: http://131.160.163.101:5000/v3
+  username: dejan.kitic@ericsson.com
+  password: Passw0rd1
+  region: RegionOne
+  tenant-id: dce27f0651294d87822e6fb8425cd295
+
+resource_registry:
+  Kubernetes::Master::Server: fragments/master-instance.yaml
+  Kubernetes::Minion::Server: fragments/minion-instance.yaml
+

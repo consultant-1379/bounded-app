@@ -1,0 +1,7 @@
+name: licence-service
+version: 1.0.0
+description: ENM Licence Service chart for kubernetes.
+maintainers:
+  - name: Dejan Kitic
+    email: dejan.kitic@ericsson.com
+

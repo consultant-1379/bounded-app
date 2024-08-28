@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for Event Receiver
+name: event-receiver
+version: 1.0

@@ -1,0 +1,8 @@
+name: enm-postgres
+version: 1.0.0
+description: ENM Postgres chart for kubernetes.
+maintainers:
+  - name: Dejan Kitic
+    email: dejan.kitic@ericsson.com
+
+

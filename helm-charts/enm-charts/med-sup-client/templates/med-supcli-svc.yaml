@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: supclient
+  labels:
+    app: supclient
+spec:
+  ports:
+  - port: 4447
+    name: med-supcli-remote
+    protocol: TCP
+  - port: 9999
+    protocol: TCP
+    name: med-supcli-ejb
+  - port: 9990
+    name: med-supcli-admin
+    protocol: TCP
+  selector:
+    app: supclient

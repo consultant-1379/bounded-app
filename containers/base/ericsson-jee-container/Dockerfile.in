@@ -1,0 +1,23 @@
+FROM 	armdocker.rnd.ericsson.se/proj_enm/ericsson-java7-container:TAG
+
+COPY    config/rootCA* /ericsson/tor/data/certificates/
+COPY    target/container_content /opt/content/
+
+RUN     useradd -U -ms /bin/bash jboss_user && \
+        echo -e "jboss_user\njboss_user" | (passwd --stdin jboss_user) && \
+        groupadd -g 205 jboss && \
+        usermod -aG jboss jboss_user
+
+RUN	mkdir -p /ericsson/pmic1 /ericsson/pmic2 /ericsson/symvol /ericsson/enm/dumps /ericsson/batch /ericsson/config_mgt /ericsson/configuration_management/UpgradeIndependence	
+
+RUN     cd /opt/content && cat container_content | xargs -I {} curl -k -L -O {} && \
+	rpm -ivh  --nodeps *.rpm && \
+	chown jboss_user:jboss /ericsson/3pp/jboss/ -R && \
+	cd && rm -rf /opt/content
+
+RUN     echo -e "jboss_user             soft            nproc           32768\n" >> /etc/security/limits.conf && \
+        echo -e "jboss_user             hard            nproc           62000\n" >> /etc/security/limits.conf
+
+RUN	sed -i 's/#$ModLoad imudp/$ModLoad imudp/g' /etc/rsyslog.conf  && \
+	sed -i 's/#$UDPServerRun 514/$UDPServerRun 514/g' /etc/rsyslog.conf
+

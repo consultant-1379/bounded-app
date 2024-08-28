@@ -1,0 +1,18 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+@55.55.55.55    str-1-dps       dps-1-internal
+@55.55.55.55    str-1-reg1      reg1-1-internal
+@10.5.0.2       str-1-zoo1      zoo1-1-internal
+@55.55.55.55	str-1-kafka1    kafka1-1-internal
+@55.55.55.55	str-1-apeps1    apeps1-1-internal
+@55.55.55.55    str-1-dfwd1     dfwd1-1-internal
+@55.55.55.55    str-2-reg1      reg1-2-internal
+@55.55.55.55    str-2-kafka1    kafka1-2-internal
+@55.55.55.55    str-2-apeps1    apeps1-2-internal
+@10.5.0.3       str-2-zoo1      zoo1-2-internal
+@55.55.55.55    str-2-dfwd1     dfwd1-2-internal
+@55.55.55.55    str-1-msstr1    msstr1-1-internal
+@55.55.55.55    str-2-msstr1    msstr1-2-internal
+@10.5.0.4       str-3-zoo1      zoo1-3-internal
+@10.5.0.4       str-1-eventreceiver1    eventreceiver1-1-internal
+@10.5.0.4       str-1-s3        s3-1-internal

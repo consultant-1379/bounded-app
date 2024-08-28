@@ -1,0 +1,9 @@
+**/tests/*
+.DS_Store
+**/config/ISO/index.html
+**/packer/*
+**/target/*
+*.tgz
+**/requirements.lock
+
+

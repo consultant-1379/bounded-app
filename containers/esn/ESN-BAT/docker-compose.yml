@@ -1,0 +1,226 @@
+version: '2'
+
+services:
+
+  modelService:
+    build: dps-integration
+    image: esn/modelservice
+    container_name: str-1-dps
+    hostname: str-1-dps
+    tty : true
+    volumes:
+     - /etc/opt/ericsson/ERICmodeldeployment
+     - /opt/ericsson/ERICdpsupgrade/egt/output
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+
+  zoo1-1-internal:
+    build: zoo
+    image: esn/zookeeper
+    container_name: str-1-zoo1
+    hostname: str-1-zoo1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    depends_on:
+      - modelService
+
+  zoo1-2-internal:
+    image: esn/zookeeper
+    container_name: str-2-zoo1
+    hostname: str-2-zoo1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    depends_on:
+      - zoo1-1-internal
+
+  zoo1-3-internal:
+    image: esn/zookeeper
+    container_name: str-3-zoo1
+    hostname: str-3-zoo1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    depends_on:
+      - zoo1-2-internal
+
+  kafka1-1-internal:
+    build: kafka
+    image: esn/kafka
+    container_name: str-1-kafka1
+    hostname: str-1-kafka1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    volumes_from:
+     - modelService
+    depends_on:
+      - zoo1-3-internal
+
+  kafka1-2-internal:
+    image: esn/kafka
+    container_name: str-2-kafka1
+    hostname: str-2-kafka1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    volumes_from:
+     - modelService
+    depends_on:
+      - zoo1-3-internal
+
+  msstr1-1-internal:
+    build: msstr
+    image: esn/msstr
+    container_name: str-1-msstr1
+    hostname: str-1-msstr1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    volumes_from:
+     - modelService
+    depends_on:
+      - kafka1-1-internal
+      - kafka1-2-internal
+
+  msstr1-2-internal:
+    image: esn/msstr
+    container_name: str-2-msstr1
+    hostname: str-2-msstr1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    volumes_from:
+     - modelService
+    depends_on:
+      - kafka1-1-internal
+      - kafka1-2-internal
+
+  reg1-1-internal:
+    build: reg
+    image: esn/reg
+    container_name: str-1-reg1
+    hostname: str-1-reg1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    volumes_from:
+     - modelService
+    depends_on:
+      - kafka1-1-internal
+      - kafka1-2-internal
+
+  reg1-2-internal:
+    build: reg
+    image: esn/reg
+    container_name: str-2-reg1
+    hostname: str-2-reg1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    volumes_from:
+     - modelService
+    depends_on:
+      - kafka1-1-internal
+      - kafka1-2-internal
+
+  apeps1-1-internal:
+    build: apeps
+    image: esn/apeps
+    container_name: str-1-apeps1
+    hostname: str-1-apeps1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    volumes_from:
+     - modelService
+    depends_on:
+      - kafka1-1-internal
+      - kafka1-2-internal
+      - reg1-1-internal
+      - reg1-2-internal
+
+  apeps1-2-internal:
+    build: apeps
+    image: esn/apeps
+    container_name: str-2-apeps1
+    hostname: str-2-apeps1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    volumes_from:
+     - modelService
+    depends_on:
+      - kafka1-1-internal
+      - kafka1-2-internal
+      - reg1-1-internal
+      - reg1-2-internal
+
+  dfwd1-1-internal:
+    build: dfwd
+    image: esn/dfwd
+    container_name: str-1-dfwd1
+    hostname: str-1-dfwd1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    volumes_from:
+     - modelService
+    depends_on:
+      - eventreceiver1-1-internal
+
+  dfwd1-2-internal:
+    build: dfwd
+    image: esn/dfwd
+    container_name: str-2-dfwd1
+    hostname: str-2-dfwd1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    volumes_from:
+     - modelService
+    depends_on:
+      - eventreceiver1-1-internal
+
+  s3-1-internal:
+    build: s3
+    image: esn/s3
+    container_name: str-1-s3
+    hostname: str-1-s3
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    depends_on:
+      - eventreceiver1-1-internal
+      - msstr1-1-internal
+      - msstr1-2-internal
+
+  eventreceiver1-1-internal:
+    build: eventreceiver
+    image: esn/eventreceiver
+    container_name: str-1-eventreceiver1
+    hostname: str-1-eventreceiver1
+    tty: true
+    volumes:
+     - ./hosts:/etc/hosts
+     - ./global.properties:/ericsson/tor/data/global.properties
+    depends_on:
+      - apeps1-1-internal
+      - apeps1-2-internal
+
+

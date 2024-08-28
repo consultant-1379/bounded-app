@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: fmservice
+spec:
+  template:
+    metadata:
+      labels:
+        app: fmserv
+        tier: services
+    spec:
+      containers:
+      - name: fmservice
+        imagePullPolicy: {{.Values.pullPolicy}}
+        image: {{.Values.imageRegistry}}/fm-service:{{.Values.dockerTag}}
+        env:
+         - name: DOMAIN
+           value: {{.Values.dnsDomain}}
+         - name: JVM_HEAP_SIZE
+           value: {{.Values.jvmXmx | quote}}
+        resources:
+          limits:
+            memory: {{.Values.memLimit}}
+            cpu: {{.Values.cpuLimit}}
+        ports:
+        - containerPort: 4447
+        - containerPort: 9990
+        - containerPort: 9999
+        volumeMounts:
+        - mountPath: /etc/opt/ericsson
+          name: models
+        - mountPath: /ericsson/tor/data/dps
+          name: dps
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: models-pvc
+        - name: dps
+          persistentVolumeClaim:
+            claimName: dps-pvc
+

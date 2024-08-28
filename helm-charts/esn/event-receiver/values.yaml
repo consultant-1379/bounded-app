@@ -1,0 +1,7 @@
+imageRegistry: "armdocker.rnd.ericsson.se/proj_bounded_application/esn"
+imageName: "event-receiver"
+dockerTag: "latest"
+dnsDomain: "default.svc.dekstroza.local"
+erNamespace: "default"
+erDNSDomain: "dekstroza.local"
+pullPolicy: "Always"
